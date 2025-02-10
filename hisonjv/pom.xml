@@ -9,7 +9,7 @@
   <version>1.0.0</version>
 
   <name>hisonjv</name>
-  <description>Hisonjv is a lightweight Maven library that combines api-link and utils functionalities for simplified Spring development and common Java utilities.</description>
+  <description>Hisonjv is a lightweight Maven library that combines api-link, data-model and utils functionalities for simplified Spring development and common Java utilities.</description>
   <url>https://github.com/hisondev/hisonjv</url>
 
   <licenses>
