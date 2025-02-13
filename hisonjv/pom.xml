@@ -6,7 +6,7 @@
 
   <groupId>io.github.hisondev</groupId>
   <artifactId>hisonjv</artifactId>
-  <version>1.0.1</version>
+  <version>1.0.2</version>
 
   <name>hisonjv</name>
   <description>Hisonjv is a lightweight Maven library that combines api-link, data-model and utils functionalities for simplified Spring development and common Java utilities.</description>
@@ -69,12 +69,12 @@
     <dependency>
         <groupId>io.github.hisondev</groupId>
         <artifactId>utils</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.1</version>
     </dependency>
     <dependency>
         <groupId>io.github.hisondev</groupId>
         <artifactId>api-link</artifactId>
-        <version>1.0.2</version>
+        <version>1.0.5</version>
     </dependency>
   </dependencies>
 
