@@ -171,49 +171,47 @@ You can add the `api-link` library to your project by including the following de
 ### Basic Setup
 The api-link library allows you to simplify your Spring application's controller layer. Here's how to set it up:
 
-1. **Define your service methods:**
-Create api controller that you want to expose through the `api-link`
-```java
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+1. **Configuration**
+Automatic Bean Registration
+ApiController and WebSocketConfig are automatically registered as Beans through spring.factories. This means you do not need to manually create these components.
 
-import com.example.demo.common.api.controller.ApiLink;
+```properties
+# spring.factories configuration (handled internally)
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  io.github.hison.api.caching.WebSocketConfig,\
+  io.github.hison.api.controller.ApiController
+```
+
+### Conflict Prevention
+ApiController is registered only if ApiLink is not already defined in the project.
+But you can use your custom Controller with extending ApiLink.
+```java
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.CrossOrigin;
+
+import io.github.hison.api.controller.ApiLink;
 
 @RestController
-@RequestMapping("/hison-api-link")
-public class ApiController extends ApiLink{
-}
+@RequestMapping("hison-api-link")
+@CrossOrigin("http://localhost:3000/")
+public class ApiLinkController extends ApiLink {}
 ```
 
-2. **Create a custom data converter:**
-Define a class that extends `DataConverterDefault` and override necessary methods for customization.
-
+WebSocketConfig is registered only if WebSocketConfigurer is not defined.
+But you can use your custom WebSocket with extending CachingWebSocket.
 ```java
-import org.springframework.stereotype.Service;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.socket.config.annotation.EnableWebSocket;
 
-@Service
-public class MyService {
-    public void myMethod(DataWrapper data) {
-        // Your business logic here
-    }
-}
+import io.github.hison.api.caching.CachingWebSocket;
+
+@Configuration
+@EnableWebSocket
+public class ApiLinkWebSocket implements CachingWebSocket {}
 ```
 
-3. **Configure the API Link controller:**
-Set up the `ApiLink` controller to handle HTTP requests and invoke your service methods.
-
-```java
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-@SpringBootApplication
-public class DemoApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(DemoApplication.class, args);
-    }
-}
-```
-4. **Making API Calls**
+2. **Making API Calls**
 To call a service method via the `api-link`, send an HTTP request with the 'cmd' parameter specifying the service and method names.
 
 ```java
