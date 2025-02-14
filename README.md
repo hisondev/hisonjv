@@ -27,17 +27,6 @@ Before you can use the `data-model` library, you need to have the following soft
 - Java Development Kit (JDK) 8 or higher
 - Apache Maven (for building the project)
 
-### Installation
-You can add the `data-model` library to your project by including the following dependency in your Maven `pom.xml` file:
-
-```xml
-<dependency>
-    <groupId>io.github.hisondev</groupId>
-    <artifactId>data-model</artifactId>
-    <version>1.0.7</version>
-</dependency>
-```
-
 ## Usage
 ### DataWrapper and DataModel Utilities
 ```java
@@ -156,17 +145,6 @@ Before you can use the `api-link` library, you need to have the following softwa
 - Java Development Kit (JDK) 8 or higher
 - Apache Maven (for building the project)
 
-### Installation
-You can add the `api-link` library to your project by including the following dependency in your Maven `pom.xml` file:
-
-```xml
-<dependency>
-    <groupId>io.github.hisondev</groupId>
-    <artifactId>api-link</artifactId>
-    <version>1.0.2</version>
-</dependency>
-```
-
 ## Usage
 ### Basic Setup
 The api-link library allows you to simplify your Spring application's controller layer. Here's how to set it up:
@@ -178,8 +156,8 @@ ApiController and WebSocketConfig are automatically registered as Beans through 
 ```properties
 # spring.factories configuration (handled internally)
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  io.github.hison.api.caching.WebSocketConfig,\
-  io.github.hison.api.controller.ApiController
+  io.github.hison.api.caching.ApiLinkWebSocket,\
+  io.github.hison.api.controller.ApiLinkController
 ```
 
 ### Conflict Prevention
@@ -300,22 +278,28 @@ The api-link library supports caching through WebSockets, allowing real-time dat
 Handle WebSocket messages and manage caching logic.
 
 ```java
-import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistration;
+import io.github.hison.api.cachinghandler.CachingHandlerDefault;
+
+import java.io.IOException;
+import java.util.concurrent.CopyOnWriteArrayList;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
-import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-public class WebSocketHandler extends TextWebSocketHandler {
-    @Override	
-        public void setRegistry(WebSocketHandlerRegistration registry) {
-        // You can setAllowedOrigins via setRegistry
-        registry.setAllowedOrigins("http://localhost:3000/");	
-    };
+public class CustomCachingHandler implements CachingHandlerDefault{
     @Override
-    public void handleTextMessage(WebSocketSession session, TextMessage message) {
-        // Handle incoming WebSocket message and manage caching
-        String payload = message.getPayload();
-        // Your caching logic here
+    public void notifyAllSessions(CopyOnWriteArrayList<WebSocketSession> sessions, String message) {
+        for (WebSocketSession session : sessions) {
+            try {
+                if (session.isOpen()) {
+                    if(message == null) {
+                        message = "";
+                    }
+                    session.sendMessage(new TextMessage(message));
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
 ```
@@ -336,6 +320,29 @@ public class DemoApplication {
     }
 }
 ```
+
+## application.properties Configuration
+The api-link library provides several configuration options via application.properties, making it easy to customize behavior.
+
+```properties
+# API Path Configuration
+hison.link.api.path=/hison-api-link  # Default API path
+# CORS Configuration
+hison.link.api.cors.origins=*                # Default: Allow all origins
+hison.link.api.cors.allow-credentials=false  # Default: Do not allow credentials
+hison.link.api.cors.methods                  # Default: GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS
+# API Status Message
+hison.link.api.status.message=Hison API is ready and running.
+# WebSocket Endpoint Configuration
+hison.link.websocket.endpoint=/hison-websocket-endpoint  # Default WebSocket endpoint
+```
+### Explanation of Properties:
+hison.link.api.path: Sets the base path for the API controller.
+hison.link.api.cors.origins: Defines allowed CORS origins. Use a comma-separated list for multiple origins.
+hison.link.api.cors.allow-credentials: Specifies whether credentials (cookies, authorization headers) are allowed in CORS requests.
+hison.link.api.cors.methods: allowed methods.
+hison.link.api.status.message: Custom status message returned by the /status endpoint.
+hison.link.websocket.endpoint: Sets the WebSocket endpoint for real-time data updates.
 
 
 # 3. utils [![Maven Central](https://img.shields.io/maven-central/v/io.github.hisondev/utils.svg?label=Maven%20Central)](https://mvnrepository.com/artifact/io.github.hisondev/utils)
