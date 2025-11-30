@@ -13,6 +13,22 @@ The `hisonjv` project integrates the following libraries:
 - **`api-link`**: A novel solution for Spring projects, aimed at eliminating the need for individual controllers. It allows developers to invoke service layer methods using a single `cmd` value, simplifying workflow and improving productivity.  
 - **`utils`**: A set of utility functions for common Java tasks such as string manipulation, date and time operations, and number formatting.  
 
+## Version Compatibility & Upgrade Guide
+
+> **Quick rule:**  
+> - **Spring Boot 3.x+** → use **hisonjv 2.x** (bundles: `api-link 2.x`, `data-model 2.x`, `utils 2.x`)  
+>   - Requires **Java 17+** (recommended **21**) and **`jakarta.*`** namespaces  
+> - **Spring Boot 2.7.x** → use **hisonjv 1.x** (bundles: `api-link 1.x`, `data-model 1.x`, `utils 1.x`)  
+>   - Works with **Java 8+** and **`javax.*`** namespaces
+
+### Compatibility Matrix
+
+| hisonjv | Spring Boot | Java | Namespaces | Bundled libs (major)              |
+|--------:|-------------|------|------------|-----------------------------------|
+| **1.x** | **2.7.x**   | 8+   | `javax.*`  | api-link **1.x**, data-model **1.x**, utils **1.x** |
+| **2.x** | **3.x+**    | 17+  | `jakarta.*`| api-link **2.x**, data-model **2.x**, utils **2.x** |
+
+---
 
 # 1. data-model [![Maven Central](https://img.shields.io/maven-central/v/io.github.hisondev/data-model.svg?label=Maven%20Central)](https://mvnrepository.com/artifact/io.github.hisondev/data-model)
 A library designed to simplify data communication in Spring applications. Primarily featuring the DataWrapper and DataModel classes to streamline the process of data transfer and management.
